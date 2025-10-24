@@ -15,7 +15,7 @@
 }
 
 #hod-employee-form input {
-    width: 100%;
+    width: 95%;
     padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
@@ -49,6 +49,7 @@
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
+    font-size: 14px;
 }
 
 .hod-table th,
