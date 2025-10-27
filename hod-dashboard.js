@@ -23,28 +23,29 @@ jQuery(document).ready(function($) {
                 .hod-modal { position: fixed; top: 20%; left: 20%; width: 60%; background: #fff; padding: 20px; border: 1px solid #000; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
                 .hod-modal input { width: 100%; margin: 5px 0; }
             </style>
-            <table class="hod-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Start Date</th>
-                        <th>Phone</th>
-                        <th>ICE Name</th>
-                        <th>ICE Phone</th>
-                        <th>Bank Reg Nr</th>
-                        <th>Bank Account Nr</th>
-                        <th>Tax Type</th>
-                        <th>Teaching Degree</th>
-                        <th>Pedagogue Degree</th>
-                        <th>Misc</th>
-                        <th>Consent</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div style="overflow-x: auto;">
+                <table class="hod-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Start Date</th>
+                            <th>Phone</th>
+                            <th>ICE Name</th>
+                            <th>ICE Phone</th>
+                            <th>Bank Reg Nr</th>
+                            <th>Bank Account Nr</th>
+                            <th>Tax Type</th>
+                            <th>Teaching Degree</th>
+                            <th>Pedagogue Degree</th>
+                            <th>Misc</th>
+                            <th>Consent</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
         `;
         entries.forEach(entry => {
             html += `
@@ -71,7 +72,7 @@ jQuery(document).ready(function($) {
                 </tr>
             `;
         });
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
         $('#entries-table').html(html);
     }
 
