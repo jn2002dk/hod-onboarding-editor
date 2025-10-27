@@ -148,3 +148,14 @@
 .hod-modal button[type="button"]:hover {
     background: #b32d2e;
 }
+
+/* Block Editor Preview */
+.hod-block-preview {
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    font-style: italic;
+    color: #666;
+}

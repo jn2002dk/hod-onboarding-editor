@@ -152,6 +152,28 @@ function hod_onboarding_dashboard_shortcode() {
 }
 add_shortcode( 'hod_onboarding_dashboard', 'hod_onboarding_dashboard_shortcode' );
 
+// Register Gutenberg blocks
+function hod_register_blocks() {
+    wp_register_script( 'hod-blocks-js', plugin_dir_url( __FILE__ ) . 'hod-blocks.js', array( 'wp-blocks', 'wp-element', 'wp-editor' ), '1.3', true );
+    
+    register_block_type( 'hod/employee-form', array(
+        'editor_script' => 'hod-blocks-js',
+        'render_callback' => 'hod_employee_form_shortcode',
+    ) );
+    
+    register_block_type( 'hod/dashboard', array(
+        'editor_script' => 'hod-blocks-js',
+        'render_callback' => 'hod_onboarding_dashboard_shortcode',
+    ) );
+}
+add_action( 'init', 'hod_register_blocks' );
+
+// Enqueue CSS for block editor
+function hod_enqueue_block_editor_assets() {
+    wp_enqueue_style( 'hod-styles', plugin_dir_url( __FILE__ ) . 'hod-styles.css', array(), '1.3' );
+}
+add_action( 'enqueue_block_editor_assets', 'hod_enqueue_block_editor_assets' );
+
 // AJAX: Get entries
 add_action( 'wp_ajax_get_hod_entries', 'get_hod_entries' );
 function get_hod_entries() {
