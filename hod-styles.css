@@ -19,6 +19,7 @@
 .form-field label {
     margin-bottom: 5px;
     font-weight: bold;
+    font-size: medium;
 }
 
 .form-field input,
@@ -84,7 +85,7 @@
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    font-size: 14px;
+    font-size: 10px;
 }
 
 .hod-table th,
