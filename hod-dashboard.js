@@ -27,6 +27,7 @@ jQuery(document).ready(function($) {
                 <table class="hod-table">
                     <thead>
                         <tr>
+                            <th>Actions</th>
                             <th>ID</th>
                             <th>Name</th>
                             <th>Email</th>
@@ -42,7 +43,6 @@ jQuery(document).ready(function($) {
                             <th>Misc</th>
                             <th>Consent</th>
                             <th>Status</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,6 +50,12 @@ jQuery(document).ready(function($) {
         entries.forEach(entry => {
             html += `
                 <tr>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <button onclick="editEntry(${entry.id}, '${entry.name}', '${entry.email}', '${entry.start_date}', '${entry.phone || ''}', '${entry.ice_name || ''}', '${entry.ice_phone || ''}', '${entry.bank_reg_nr || ''}', '${entry.bank_account_nr || ''}', '${entry.tax_type || ''}', '${entry.teaching_degree || ''}', '${entry.pedagogue_degree || ''}', '${entry.misc || ''}', ${entry.consent})">Edit</button>
+                            <button onclick="sendEntry(${entry.id})">Send</button>
+                        </div>
+                    </td>
                     <td>${entry.id}</td>
                     <td>${entry.name}</td>
                     <td>${entry.email}</td>
@@ -65,10 +71,6 @@ jQuery(document).ready(function($) {
                     <td>${entry.misc || ''}</td>
                     <td>${entry.consent ? 'Yes' : 'No'}</td>
                     <td>${entry.status}</td>
-                    <td>
-                        <button onclick="editEntry(${entry.id}, '${entry.name}', '${entry.email}', '${entry.start_date}', '${entry.phone || ''}', '${entry.ice_name || ''}', '${entry.ice_phone || ''}', '${entry.bank_reg_nr || ''}', '${entry.bank_account_nr || ''}', '${entry.tax_type || ''}', '${entry.teaching_degree || ''}', '${entry.pedagogue_degree || ''}', '${entry.misc || ''}', ${entry.consent})">Edit</button>
-                        <button onclick="sendEntry(${entry.id})">Send</button>
-                    </td>
                 </tr>
             `;
         });
