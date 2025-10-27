@@ -30,6 +30,16 @@ jQuery(document).ready(function($) {
                         <th>Name</th>
                         <th>Email</th>
                         <th>Start Date</th>
+                        <th>Phone</th>
+                        <th>ICE Name</th>
+                        <th>ICE Phone</th>
+                        <th>Bank Reg Nr</th>
+                        <th>Bank Account Nr</th>
+                        <th>Tax Type</th>
+                        <th>Teaching Degree</th>
+                        <th>Pedagogue Degree</th>
+                        <th>Misc</th>
+                        <th>Consent</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -43,9 +53,19 @@ jQuery(document).ready(function($) {
                     <td>${entry.name}</td>
                     <td>${entry.email}</td>
                     <td>${entry.start_date}</td>
+                    <td>${entry.phone || ''}</td>
+                    <td>${entry.ice_name || ''}</td>
+                    <td>${entry.ice_phone || ''}</td>
+                    <td>${entry.bank_reg_nr || ''}</td>
+                    <td>${entry.bank_account_nr || ''}</td>
+                    <td>${entry.tax_type || ''}</td>
+                    <td>${entry.teaching_degree || ''}</td>
+                    <td>${entry.pedagogue_degree || ''}</td>
+                    <td>${entry.misc || ''}</td>
+                    <td>${entry.consent ? 'Yes' : 'No'}</td>
                     <td>${entry.status}</td>
                     <td>
-                        <button onclick="editEntry(${entry.id}, '${entry.name}', '${entry.email}', '${entry.start_date}')">Edit</button>
+                        <button onclick="editEntry(${entry.id}, '${entry.name}', '${entry.email}', '${entry.start_date}', '${entry.phone || ''}', '${entry.ice_name || ''}', '${entry.ice_phone || ''}', '${entry.bank_reg_nr || ''}', '${entry.bank_account_nr || ''}', '${entry.tax_type || ''}', '${entry.teaching_degree || ''}', '${entry.pedagogue_degree || ''}', '${entry.misc || ''}', ${entry.consent})">Edit</button>
                         <button onclick="sendEntry(${entry.id})">Send</button>
                     </td>
                 </tr>
@@ -55,19 +75,75 @@ jQuery(document).ready(function($) {
         $('#entries-table').html(html);
     }
 
-    window.editEntry = function(entryId, name, email, start_date) {
+    window.editEntry = function(entryId, name, email, start_date, phone, ice_name, ice_phone, bank_reg_nr, bank_account_nr, tax_type, teaching_degree, pedagogue_degree, misc, consent) {
         const modalHtml = `
             <div id="hod-modal" class="hod-modal">
                 <h3>Edit Entry #${entryId}</h3>
                 <form id="hod-edit-form">
-                    <label>Name</label>
-                    <input name="name-1" value="${name || ''}">
-                    <label>Email</label>
-                    <input name="email-1" value="${email || ''}">
-                    <label>Start Date</label>
-                    <input name="date-1" value="${start_date || ''}">
-                    <button type="submit">Save</button>
-                    <button type="button" onclick="jQuery('#hod-modal').remove()">Cancel</button>
+                    <div class="form-field">
+                        <label>Name</label>
+                        <input name="name-1" value="${name || ''}">
+                    </div>
+                    <div class="form-field">
+                        <label>Email</label>
+                        <input name="email-1" value="${email || ''}">
+                    </div>
+                    <div class="form-field">
+                        <label>Start Date</label>
+                        <input name="date-1" value="${start_date || ''}">
+                    </div>
+                    <div class="form-field">
+                        <label>Phone</label>
+                        <input name="phone" value="${phone || ''}">
+                    </div>
+                    <div class="form-field">
+                        <label>ICE Name</label>
+                        <input name="ice_name" value="${ice_name || ''}">
+                    </div>
+                    <div class="form-field">
+                        <label>ICE Phone</label>
+                        <input name="ice_phone" value="${ice_phone || ''}">
+                    </div>
+                    <div class="form-field">
+                        <label>Bank Reg Nr</label>
+                        <input name="bank_reg_nr" value="${bank_reg_nr || ''}">
+                    </div>
+                    <div class="form-field">
+                        <label>Bank Account Nr</label>
+                        <input name="bank_account_nr" value="${bank_account_nr || ''}">
+                    </div>
+                    <div class="form-field">
+                        <label>Tax Type</label>
+                        <div class="radio-group">
+                            <input type="radio" name="tax_type" value="hoved" ${tax_type === 'hoved' ? 'checked' : ''}> Hoved
+                            <input type="radio" name="tax_type" value="bikort" ${tax_type === 'bikort' ? 'checked' : ''}> Bikort
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label>Teaching Degree</label>
+                        <div class="radio-group">
+                            <input type="radio" name="teaching_degree" value="yes" ${teaching_degree === 'yes' ? 'checked' : ''}> Yes
+                            <input type="radio" name="teaching_degree" value="no" ${teaching_degree === 'no' ? 'checked' : ''}> No
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label>Pedagogue Degree</label>
+                        <div class="radio-group">
+                            <input type="radio" name="pedagogue_degree" value="yes" ${pedagogue_degree === 'yes' ? 'checked' : ''}> Yes
+                            <input type="radio" name="pedagogue_degree" value="no" ${pedagogue_degree === 'no' ? 'checked' : ''}> No
+                        </div>
+                    </div>
+                    <div class="form-field full-width">
+                        <label>Misc</label>
+                        <textarea name="misc">${misc || ''}</textarea>
+                    </div>
+                    <div class="form-field full-width">
+                        <label><input type="checkbox" name="consent" ${consent ? 'checked' : ''}> Consent</label>
+                    </div>
+                    <div class="form-field full-width">
+                        <button type="submit">Save</button>
+                        <button type="button" onclick="jQuery('#hod-modal').remove()">Cancel</button>
+                    </div>
                 </form>
             </div>
         `;
@@ -78,7 +154,17 @@ jQuery(document).ready(function($) {
             const updates = {
                 'name-1': $('input[name="name-1"]').val(),
                 'email-1': $('input[name="email-1"]').val(),
-                'date-1': $('input[name="date-1"]').val()
+                'date-1': $('input[name="date-1"]').val(),
+                'phone': $('input[name="phone"]').val(),
+                'ice_name': $('input[name="ice_name"]').val(),
+                'ice_phone': $('input[name="ice_phone"]').val(),
+                'bank_reg_nr': $('input[name="bank_reg_nr"]').val(),
+                'bank_account_nr': $('input[name="bank_account_nr"]').val(),
+                'tax_type': $('input[name="tax_type"]:checked').val(),
+                'teaching_degree': $('input[name="teaching_degree"]:checked').val(),
+                'pedagogue_degree': $('input[name="pedagogue_degree"]:checked').val(),
+                'misc': $('textarea[name="misc"]').val(),
+                'consent': $('input[name="consent"]').is(':checked') ? 1 : 0
             };
 
             $.post(hod_ajax.ajax_url, {

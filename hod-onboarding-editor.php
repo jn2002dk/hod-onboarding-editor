@@ -18,6 +18,16 @@ function hod_create_table() {
         name varchar(255) NOT NULL,
         email varchar(255) NOT NULL,
         start_date varchar(50) NOT NULL,
+        phone varchar(20),
+        ice_name varchar(255),
+        ice_phone varchar(20),
+        bank_reg_nr varchar(50),
+        bank_account_nr varchar(50),
+        tax_type varchar(20),
+        teaching_degree varchar(3),
+        pedagogue_degree varchar(3),
+        misc text,
+        consent tinyint(1) DEFAULT 0,
         status varchar(20) DEFAULT 'pending',
         created_at datetime DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)
@@ -52,13 +62,69 @@ function hod_employee_form_shortcode() {
     ob_start();
     ?>
     <form id="hod-employee-form">
-        <label>Name</label>
-        <input type="text" name="name-1" required>
-        <label>Email</label>
-        <input type="email" name="email-1" required>
-        <label>Start Date</label>
-        <input type="date" name="date-1" required>
-        <button type="submit">Submit</button>
+        <div class="form-field">
+            <label>Name</label>
+            <input type="text" name="name-1" required>
+        </div>
+        <div class="form-field">
+            <label>Email</label>
+            <input type="email" name="email-1" required>
+        </div>
+        <div class="form-field">
+            <label>Start Date</label>
+            <input type="date" name="date-1" required>
+        </div>
+        <div class="form-field">
+            <label>Phone</label>
+            <input type="tel" name="phone" required>
+        </div>
+        <div class="form-field">
+            <label>ICE Name</label>
+            <input type="text" name="ice_name" required>
+        </div>
+        <div class="form-field">
+            <label>ICE Phone</label>
+            <input type="tel" name="ice_phone" required>
+        </div>
+        <div class="form-field">
+            <label>Bank Reg Nr</label>
+            <input type="text" name="bank_reg_nr" required>
+        </div>
+        <div class="form-field">
+            <label>Bank Account Nr</label>
+            <input type="text" name="bank_account_nr" required>
+        </div>
+        <div class="form-field">
+            <label>Tax Type</label>
+            <div class="radio-group">
+                <input type="radio" name="tax_type" value="hoved" required> Hoved
+                <input type="radio" name="tax_type" value="bikort" required> Bikort
+            </div>
+        </div>
+        <div class="form-field">
+            <label>Teaching Degree</label>
+            <div class="radio-group">
+                <input type="radio" name="teaching_degree" value="yes" required> Yes
+                <input type="radio" name="teaching_degree" value="no" required> No
+            </div>
+        </div>
+        <div class="form-field">
+            <label>Pedagogue Degree</label>
+            <div class="radio-group">
+                <input type="radio" name="pedagogue_degree" value="yes" required> Yes
+                <input type="radio" name="pedagogue_degree" value="no" required> No
+            </div>
+        </div>
+        <div class="form-field full-width">
+            <label>Misc</label>
+            <textarea name="misc"></textarea>
+        </div>
+        <div class="form-field full-width">
+            <label><input type="checkbox" name="consent" required> I consent</label>
+        </div>
+        <div class="form-field full-width">
+            <button type="submit">Submit</button>
+        </div>
     </form>
     <div id="form-message"></div>
     <script>
@@ -68,9 +134,19 @@ function hod_employee_form_shortcode() {
                 const name = $('input[name="name-1"]').val().trim();
                 const email = $('input[name="email-1"]').val().trim();
                 const start_date = $('input[name="date-1"]').val().trim();
+                const phone = $('input[name="phone"]').val().trim();
+                const ice_name = $('input[name="ice_name"]').val().trim();
+                const ice_phone = $('input[name="ice_phone"]').val().trim();
+                const bank_reg_nr = $('input[name="bank_reg_nr"]').val().trim();
+                const bank_account_nr = $('input[name="bank_account_nr"]').val().trim();
+                const tax_type = $('input[name="tax_type"]:checked').val();
+                const teaching_degree = $('input[name="teaching_degree"]:checked').val();
+                const pedagogue_degree = $('input[name="pedagogue_degree"]:checked').val();
+                const misc = $('textarea[name="misc"]').val().trim();
+                const consent = $('input[name="consent"]').is(':checked');
                 
-                if (!name || !email || !start_date) {
-                    $('#form-message').removeClass('success').html('<p>Please fill all fields.</p>');
+                if (!name || !email || !start_date || !phone || !ice_name || !ice_phone || !bank_reg_nr || !bank_account_nr || !tax_type || !teaching_degree || !pedagogue_degree || !consent) {
+                    $('#form-message').removeClass('success').html('<p>Please fill all required fields and consent.</p>');
                     return;
                 }
                 
@@ -79,7 +155,17 @@ function hod_employee_form_shortcode() {
                     nonce: '<?php echo wp_create_nonce( 'hod_nonce' ); ?>',
                     name: name,
                     email: email,
-                    start_date: start_date
+                    start_date: start_date,
+                    phone: phone,
+                    ice_name: ice_name,
+                    ice_phone: ice_phone,
+                    bank_reg_nr: bank_reg_nr,
+                    bank_account_nr: bank_account_nr,
+                    tax_type: tax_type,
+                    teaching_degree: teaching_degree,
+                    pedagogue_degree: pedagogue_degree,
+                    misc: misc,
+                    consent: consent ? 1 : 0
                 };
                 
                 $.post('<?php echo admin_url( 'admin-ajax.php' ); ?>', data, function(response) {
@@ -110,13 +196,23 @@ function submit_hod_employee() {
         'name' => sanitize_text_field( $_POST['name'] ?? '' ),
         'email' => sanitize_email( $_POST['email'] ?? '' ),
         'start_date' => sanitize_text_field( $_POST['start_date'] ?? '' ),
+        'phone' => sanitize_text_field( $_POST['phone'] ?? '' ),
+        'ice_name' => sanitize_text_field( $_POST['ice_name'] ?? '' ),
+        'ice_phone' => sanitize_text_field( $_POST['ice_phone'] ?? '' ),
+        'bank_reg_nr' => sanitize_text_field( $_POST['bank_reg_nr'] ?? '' ),
+        'bank_account_nr' => sanitize_text_field( $_POST['bank_account_nr'] ?? '' ),
+        'tax_type' => sanitize_text_field( $_POST['tax_type'] ?? '' ),
+        'teaching_degree' => sanitize_text_field( $_POST['teaching_degree'] ?? '' ),
+        'pedagogue_degree' => sanitize_text_field( $_POST['pedagogue_degree'] ?? '' ),
+        'misc' => sanitize_textarea_field( $_POST['misc'] ?? '' ),
+        'consent' => intval( $_POST['consent'] ?? 0 ),
         'status' => 'pending'
     );
     
     // Validate data
-    if ( empty( $data['name'] ) || empty( $data['email'] ) || empty( $data['start_date'] ) ) {
+    if ( empty( $data['name'] ) || empty( $data['email'] ) || empty( $data['start_date'] ) || empty( $data['phone'] ) || empty( $data['ice_name'] ) || empty( $data['ice_phone'] ) || empty( $data['bank_reg_nr'] ) || empty( $data['bank_account_nr'] ) || empty( $data['tax_type'] ) || empty( $data['teaching_degree'] ) || empty( $data['pedagogue_degree'] ) || !$data['consent'] ) {
         error_log( 'HOD Submit Validation Failed: ' . print_r( $data, true ) );
-        wp_send_json_error( 'All fields are required' );
+        wp_send_json_error( 'All required fields are required and consent must be given' );
     }
     
     // Log incoming data
@@ -125,7 +221,7 @@ function submit_hod_employee() {
     $result = $wpdb->insert(
         $table_name,
         $data,
-        array( '%s', '%s', '%s', '%s' )
+        array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
     );
     
     if ( $result === false ) {
@@ -211,19 +307,29 @@ function update_hod_entry() {
         'name' => sanitize_text_field( $updates['name-1'] ?? '' ),
         'email' => sanitize_email( $updates['email-1'] ?? '' ),
         'start_date' => sanitize_text_field( $updates['date-1'] ?? '' ),
+        'phone' => sanitize_text_field( $updates['phone'] ?? '' ),
+        'ice_name' => sanitize_text_field( $updates['ice_name'] ?? '' ),
+        'ice_phone' => sanitize_text_field( $updates['ice_phone'] ?? '' ),
+        'bank_reg_nr' => sanitize_text_field( $updates['bank_reg_nr'] ?? '' ),
+        'bank_account_nr' => sanitize_text_field( $updates['bank_account_nr'] ?? '' ),
+        'tax_type' => sanitize_text_field( $updates['tax_type'] ?? '' ),
+        'teaching_degree' => sanitize_text_field( $updates['teaching_degree'] ?? '' ),
+        'pedagogue_degree' => sanitize_text_field( $updates['pedagogue_degree'] ?? '' ),
+        'misc' => sanitize_textarea_field( $updates['misc'] ?? '' ),
+        'consent' => intval( $updates['consent'] ?? 0 ),
         'status' => 'updated'
     );
     
-    if ( empty( $data['name'] ) || empty( $data['email'] ) || empty( $data['start_date'] ) ) {
+    if ( empty( $data['name'] ) || empty( $data['email'] ) || empty( $data['start_date'] ) || empty( $data['phone'] ) || empty( $data['ice_name'] ) || empty( $data['ice_phone'] ) || empty( $data['bank_reg_nr'] ) || empty( $data['bank_account_nr'] ) || empty( $data['tax_type'] ) || empty( $data['teaching_degree'] ) || empty( $data['pedagogue_degree'] ) || !$data['consent'] ) {
         error_log( 'HOD Update Validation Failed: ' . print_r( $data, true ) );
-        wp_send_json_error( 'All fields are required' );
+        wp_send_json_error( 'All required fields are required and consent must be given' );
     }
 
     $result = $wpdb->update(
         $table_name,
         $data,
         array( 'id' => $entry_id ),
-        array( '%s', '%s', '%s', '%s' ),
+        array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' ),
         array( '%d' )
     );
 
@@ -258,6 +364,16 @@ function send_hod_entry() {
     $message .= "Name: " . $entry['name'] . "\n";
     $message .= "Email: " . $entry['email'] . "\n";
     $message .= "Start Date: " . $entry['start_date'] . "\n";
+    $message .= "Phone: " . $entry['phone'] . "\n";
+    $message .= "ICE Name: " . $entry['ice_name'] . "\n";
+    $message .= "ICE Phone: " . $entry['ice_phone'] . "\n";
+    $message .= "Bank Reg Nr: " . $entry['bank_reg_nr'] . "\n";
+    $message .= "Bank Account Nr: " . $entry['bank_account_nr'] . "\n";
+    $message .= "Tax Type: " . $entry['tax_type'] . "\n";
+    $message .= "Teaching Degree: " . ($entry['teaching_degree'] == 'yes' ? 'Yes' : 'No') . "\n";
+    $message .= "Pedagogue Degree: " . ($entry['pedagogue_degree'] == 'yes' ? 'Yes' : 'No') . "\n";
+    $message .= "Misc: " . $entry['misc'] . "\n";
+    $message .= "Consent: " . ($entry['consent'] ? 'Yes' : 'No') . "\n";
 
     // Send email (replace recipients)
     $sent = wp_mail( 'admin@yourdomain.com, it@yourdomain.com', 'New Onboarding Ready', $message );
