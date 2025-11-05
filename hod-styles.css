@@ -19,7 +19,7 @@
 .form-field label {
     margin-bottom: 5px;
     font-weight: bold;
-    font-size: medium;
+    font-size: 12px;
 }
 
 .form-field input,
@@ -30,7 +30,8 @@
 }
 
 .form-field textarea {
-    width: 100%;
+    width: calc(50% - 7.5px);
+    margin-right: calc(50% + 7.5px);
     resize: vertical;
 }
 
@@ -38,6 +39,7 @@
     display: flex;
     gap: 10px;
     align-items: center;
+    font-size: 12px;
 }
 
 .radio-group input[type="radio"] {

@@ -43,6 +43,16 @@ jQuery(document).ready(function($) {
                             <th>Misc</th>
                             <th>Consent</th>
                             <th>Status</th>
+                            <th>Keys 30</th>
+                            <th>Keys 0</th>
+                            <th>Keys Music</th>
+                            <th>Keys Gym</th>
+                            <th>Flowers</th>
+                            <th>Flower Delivery</th>
+                            <th>Laptop</th>
+                            <th>Temp Employment</th>
+                            <th>Temp Reason</th>
+                            <th>Employment Level</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,7 +62,7 @@ jQuery(document).ready(function($) {
                 <tr>
                     <td>
                         <div style="display: flex; flex-direction: column; gap: 5px;">
-                            <button onclick="editEntry(${entry.id}, '${entry.name}', '${entry.email}', '${entry.start_date}', '${entry.phone || ''}', '${entry.ice_name || ''}', '${entry.ice_phone || ''}', '${entry.bank_reg_nr || ''}', '${entry.bank_account_nr || ''}', '${entry.tax_type || ''}', '${entry.teaching_degree || ''}', '${entry.pedagogue_degree || ''}', '${entry.misc || ''}', ${entry.consent})">Edit</button>
+                            <button onclick="editEntry(${entry.id}, '${entry.name}', '${entry.email}', '${entry.start_date}', '${entry.phone || ''}', '${entry.ice_name || ''}', '${entry.ice_phone || ''}', '${entry.bank_reg_nr || ''}', '${entry.bank_account_nr || ''}', '${entry.tax_type || ''}', '${entry.teaching_degree || ''}', '${entry.pedagogue_degree || ''}', '${entry.misc || ''}', ${entry.consent}, ${entry.keys_30 || 0}, ${entry.keys_0 || 0}, ${entry.keys_music || 0}, ${entry.keys_gym || 0}, '${entry.flowers || 'no'}', '${entry.flower_delivery || 'home'}', '${entry.laptop || 'no'}', '${entry.temp_employment || 'no'}', '${entry.temp_reason || ''}', '${entry.employment_level || '0'}')">Edit</button>
                             <button onclick="sendEntry(${entry.id})">Send</button>
                         </div>
                     </td>
@@ -71,6 +81,16 @@ jQuery(document).ready(function($) {
                     <td>${entry.misc || ''}</td>
                     <td>${entry.consent ? 'Yes' : 'No'}</td>
                     <td>${entry.status}</td>
+                    <td>${entry.keys_30 ? 'Yes' : 'No'}</td>
+                    <td>${entry.keys_0 ? 'Yes' : 'No'}</td>
+                    <td>${entry.keys_music ? 'Yes' : 'No'}</td>
+                    <td>${entry.keys_gym ? 'Yes' : 'No'}</td>
+                    <td>${entry.flowers == 'yes' ? 'Yes' : 'No'}</td>
+                    <td>${entry.flower_delivery}</td>
+                    <td>${entry.laptop == 'yes' ? 'Yes' : 'No'}</td>
+                    <td>${entry.temp_employment == 'yes' ? 'Yes' : 'No'}</td>
+                    <td>${entry.temp_reason || ''}</td>
+                    <td>${entry.employment_level || ''}</td>
                 </tr>
             `;
         });
@@ -78,7 +98,7 @@ jQuery(document).ready(function($) {
         $('#entries-table').html(html);
     }
 
-    window.editEntry = function(entryId, name, email, start_date, phone, ice_name, ice_phone, bank_reg_nr, bank_account_nr, tax_type, teaching_degree, pedagogue_degree, misc, consent) {
+    window.editEntry = function(entryId, name, email, start_date, phone, ice_name, ice_phone, bank_reg_nr, bank_account_nr, tax_type, teaching_degree, pedagogue_degree, misc, consent, keys_30, keys_0, keys_music, keys_gym, flowers, flower_delivery, laptop, temp_employment, temp_reason, employment_level) {
         const modalHtml = `
             <div id="hod-modal" class="hod-modal">
                 <h3>Edit Entry #${entryId}</h3>
@@ -143,6 +163,54 @@ jQuery(document).ready(function($) {
                     <div class="form-field full-width">
                         <label><input type="checkbox" name="consent" ${consent ? 'checked' : ''}> Consent</label>
                     </div>
+                    <div class="form-field">
+                        <label><input type="checkbox" name="keys_30" ${keys_30 ? 'checked' : ''}> Keys 30</label>
+                    </div>
+                    <div class="form-field">
+                        <label><input type="checkbox" name="keys_0" ${keys_0 ? 'checked' : ''}> Keys 0</label>
+                    </div>
+                    <div class="form-field">
+                        <label><input type="checkbox" name="keys_music" ${keys_music ? 'checked' : ''}> Keys Music</label>
+                    </div>
+                    <div class="form-field">
+                        <label><input type="checkbox" name="keys_gym" ${keys_gym ? 'checked' : ''}> Keys Gym</label>
+                    </div>
+                    <div class="form-field">
+                        <label>Flowers</label>
+                        <select name="flowers">
+                            <option value="no" ${flowers === 'no' ? 'selected' : ''}>No</option>
+                            <option value="yes" ${flowers === 'yes' ? 'selected' : ''}>Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Flower Delivery</label>
+                        <select name="flower_delivery">
+                            <option value="home" ${flower_delivery === 'home' ? 'selected' : ''}>Home</option>
+                            <option value="school" ${flower_delivery === 'school' ? 'selected' : ''}>School</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Laptop</label>
+                        <select name="laptop">
+                            <option value="no" ${laptop === 'no' ? 'selected' : ''}>No</option>
+                            <option value="yes" ${laptop === 'yes' ? 'selected' : ''}>Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Temp Employment</label>
+                        <select name="temp_employment">
+                            <option value="no" ${temp_employment === 'no' ? 'selected' : ''}>No</option>
+                            <option value="yes" ${temp_employment === 'yes' ? 'selected' : ''}>Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Temp Reason</label>
+                        <input name="temp_reason" value="${temp_reason || ''}">
+                    </div>
+                    <div class="form-field">
+                        <label>Employment Level</label>
+                        <input name="employment_level" value="${employment_level || '0'}">
+                    </div>
                     <div class="form-field full-width">
                         <button type="submit">Save</button>
                         <button type="button" onclick="jQuery('#hod-modal').remove()">Cancel</button>
@@ -167,7 +235,17 @@ jQuery(document).ready(function($) {
                 'teaching_degree': $('input[name="teaching_degree"]:checked').val(),
                 'pedagogue_degree': $('input[name="pedagogue_degree"]:checked').val(),
                 'misc': $('textarea[name="misc"]').val(),
-                'consent': $('input[name="consent"]').is(':checked') ? 1 : 0
+                'consent': $('input[name="consent"]').is(':checked') ? 1 : 0,
+                'keys_30': $('input[name="keys_30"]').is(':checked') ? 1 : 0,
+                'keys_0': $('input[name="keys_0"]').is(':checked') ? 1 : 0,
+                'keys_music': $('input[name="keys_music"]').is(':checked') ? 1 : 0,
+                'keys_gym': $('input[name="keys_gym"]').is(':checked') ? 1 : 0,
+                'flowers': $('select[name="flowers"]').val(),
+                'flower_delivery': $('select[name="flower_delivery"]').val(),
+                'laptop': $('select[name="laptop"]').val(),
+                'temp_employment': $('select[name="temp_employment"]').val(),
+                'temp_reason': $('input[name="temp_reason"]').val(),
+                'employment_level': $('input[name="employment_level"]').val()
             };
 
             $.post(hod_ajax.ajax_url, {

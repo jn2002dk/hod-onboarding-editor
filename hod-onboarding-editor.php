@@ -28,6 +28,16 @@ function hod_create_table() {
         pedagogue_degree varchar(3),
         misc text,
         consent tinyint(1) DEFAULT 0,
+        keys_30 tinyint(1) DEFAULT 0,
+        keys_0 tinyint(1) DEFAULT 0,
+        keys_music tinyint(1) DEFAULT 0,
+        keys_gym tinyint(1) DEFAULT 0,
+        flowers varchar(3) DEFAULT 'no',
+        flower_delivery varchar(10) DEFAULT 'home',
+        laptop varchar(3) DEFAULT 'no',
+        temp_employment varchar(3) DEFAULT 'no',
+        temp_reason text,
+        employment_level varchar(3) DEFAULT '0',
         status varchar(20) DEFAULT 'pending',
         created_at datetime DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)
@@ -206,6 +216,16 @@ function submit_hod_employee() {
         'pedagogue_degree' => sanitize_text_field( $_POST['pedagogue_degree'] ?? '' ),
         'misc' => sanitize_textarea_field( $_POST['misc'] ?? '' ),
         'consent' => intval( $_POST['consent'] ?? 0 ),
+        'keys_30' => intval( $_POST['keys_30'] ?? 0 ),
+        'keys_0' => intval( $_POST['keys_0'] ?? 0 ),
+        'keys_music' => intval( $_POST['keys_music'] ?? 0 ),
+        'keys_gym' => intval( $_POST['keys_gym'] ?? 0 ),
+        'flowers' => sanitize_text_field( $_POST['flowers'] ?? 'no' ),
+        'flower_delivery' => sanitize_text_field( $_POST['flower_delivery'] ?? 'home' ),
+        'laptop' => sanitize_text_field( $_POST['laptop'] ?? 'no' ),
+        'temp_employment' => sanitize_text_field( $_POST['temp_employment'] ?? 'no' ),
+        'temp_reason' => sanitize_textarea_field( $_POST['temp_reason'] ?? '' ),
+        'employment_level' => sanitize_text_field( $_POST['employment_level'] ?? '0' ),
         'status' => 'pending'
     );
     
@@ -221,7 +241,7 @@ function submit_hod_employee() {
     $result = $wpdb->insert(
         $table_name,
         $data,
-        array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
+        array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
     );
     
     if ( $result === false ) {
@@ -317,6 +337,16 @@ function update_hod_entry() {
         'pedagogue_degree' => sanitize_text_field( $updates['pedagogue_degree'] ?? '' ),
         'misc' => sanitize_textarea_field( $updates['misc'] ?? '' ),
         'consent' => intval( $updates['consent'] ?? 0 ),
+        'keys_30' => intval( $updates['keys_30'] ?? 0 ),
+        'keys_0' => intval( $updates['keys_0'] ?? 0 ),
+        'keys_music' => intval( $updates['keys_music'] ?? 0 ),
+        'keys_gym' => intval( $updates['keys_gym'] ?? 0 ),
+        'flowers' => sanitize_text_field( $updates['flowers'] ?? 'no' ),
+        'flower_delivery' => sanitize_text_field( $updates['flower_delivery'] ?? 'home' ),
+        'laptop' => sanitize_text_field( $updates['laptop'] ?? 'no' ),
+        'temp_employment' => sanitize_text_field( $updates['temp_employment'] ?? 'no' ),
+        'temp_reason' => sanitize_textarea_field( $updates['temp_reason'] ?? '' ),
+        'employment_level' => sanitize_text_field( $updates['employment_level'] ?? '0' ),
         'status' => 'updated'
     );
     
@@ -329,7 +359,7 @@ function update_hod_entry() {
         $table_name,
         $data,
         array( 'id' => $entry_id ),
-        array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' ),
+        array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
         array( '%d' )
     );
 
@@ -374,6 +404,16 @@ function send_hod_entry() {
     $message .= "Pedagogue Degree: " . ($entry['pedagogue_degree'] == 'yes' ? 'Yes' : 'No') . "\n";
     $message .= "Misc: " . $entry['misc'] . "\n";
     $message .= "Consent: " . ($entry['consent'] ? 'Yes' : 'No') . "\n";
+    $message .= "Keys 30: " . ($entry['keys_30'] ? 'Yes' : 'No') . "\n";
+    $message .= "Keys 0: " . ($entry['keys_0'] ? 'Yes' : 'No') . "\n";
+    $message .= "Keys Music: " . ($entry['keys_music'] ? 'Yes' : 'No') . "\n";
+    $message .= "Keys Gym: " . ($entry['keys_gym'] ? 'Yes' : 'No') . "\n";
+    $message .= "Flowers: " . ($entry['flowers'] == 'yes' ? 'Yes' : 'No') . "\n";
+    $message .= "Flower Delivery: " . $entry['flower_delivery'] . "\n";
+    $message .= "Laptop: " . ($entry['laptop'] == 'yes' ? 'Yes' : 'No') . "\n";
+    $message .= "Temporary Employment: " . ($entry['temp_employment'] == 'yes' ? 'Yes' : 'No') . "\n";
+    $message .= "Temp Employment Reason: " . $entry['temp_reason'] . "\n";
+    $message .= "Employment Level: " . $entry['employment_level'] . "%\n";
 
     // Send email (replace recipients)
     $sent = wp_mail( 'admin@yourdomain.com, it@yourdomain.com', 'New Onboarding Ready', $message );
