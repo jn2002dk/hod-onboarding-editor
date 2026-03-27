@@ -178,8 +178,7 @@ jQuery(document).ready(function($) {
                     </div>
                     <div class="form-field">
                         <label>Keys</label>
-                        <select name="keys">
-                            <option value="none" ${!entry.keys_30 && !entry.keys_0 && !entry.keys_music && !entry.keys_gym ? 'selected' : ''}>None</option>
+                        <select name="keys" multiple size="4">
                             <option value="30" ${entry.keys_30 ? 'selected' : ''}>Keys 30</option>
                             <option value="0" ${entry.keys_0 ? 'selected' : ''}>Keys 0</option>
                             <option value="music" ${entry.keys_music ? 'selected' : ''}>Keys Music</option>
@@ -251,10 +250,10 @@ jQuery(document).ready(function($) {
                 'pedagogue_degree': $('input[name="pedagogue_degree"]:checked').val(),
                 'misc': $('textarea[name="misc"]').val(),
                 'consent': $('input[name="consent"]').is(':checked') ? 1 : 0,
-                'keys_30': $('select[name="keys"]').val() === '30' ? 1 : 0,
-                'keys_0': $('select[name="keys"]').val() === '0' ? 1 : 0,
-                'keys_music': $('select[name="keys"]').val() === 'music' ? 1 : 0,
-                'keys_gym': $('select[name="keys"]').val() === 'gym' ? 1 : 0,
+                'keys_30': ($('select[name="keys"]').val() || []).includes('30') ? 1 : 0,
+                'keys_0': ($('select[name="keys"]').val() || []).includes('0') ? 1 : 0,
+                'keys_music': ($('select[name="keys"]').val() || []).includes('music') ? 1 : 0,
+                'keys_gym': ($('select[name="keys"]').val() || []).includes('gym') ? 1 : 0,
                 'flowers': $('select[name="flowers"]').val(),
                 'flower_delivery': $('select[name="flower_delivery"]').val(),
                 'laptop': $('select[name="laptop"]').val(),
