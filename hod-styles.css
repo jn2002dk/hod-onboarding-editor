@@ -50,6 +50,10 @@
     grid-column: span 2;
 }
 
+.hod-modal .full-width {
+    grid-column: span 3;
+}
+
 #hod-employee-form button {
     padding: 10px 20px;
     background: #0073aa;
@@ -152,8 +156,8 @@
 
 .hod-modal form {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px 20px;
 }
 
 .hod-modal label {
@@ -168,6 +172,7 @@
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
 .hod-modal button {
@@ -193,12 +198,14 @@
     margin-bottom: 20px;
 }
 
-.hod-modal textarea {
+.hod-modal textarea,
+.hod-modal select {
     width: 100%;
     padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
 .hod-modal input[type="radio"] {

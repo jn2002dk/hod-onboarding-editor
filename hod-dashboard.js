@@ -177,16 +177,14 @@ jQuery(document).ready(function($) {
                         <label><input type="checkbox" name="consent" ${entry.consent ? 'checked' : ''}> Consent</label>
                     </div>
                     <div class="form-field">
-                        <label><input type="checkbox" name="keys_30" ${entry.keys_30 ? 'checked' : ''}> Keys 30</label>
-                    </div>
-                    <div class="form-field">
-                        <label><input type="checkbox" name="keys_0" ${entry.keys_0 ? 'checked' : ''}> Keys 0</label>
-                    </div>
-                    <div class="form-field">
-                        <label><input type="checkbox" name="keys_music" ${entry.keys_music ? 'checked' : ''}> Keys Music</label>
-                    </div>
-                    <div class="form-field">
-                        <label><input type="checkbox" name="keys_gym" ${entry.keys_gym ? 'checked' : ''}> Keys Gym</label>
+                        <label>Keys</label>
+                        <select name="keys">
+                            <option value="none" ${!entry.keys_30 && !entry.keys_0 && !entry.keys_music && !entry.keys_gym ? 'selected' : ''}>None</option>
+                            <option value="30" ${entry.keys_30 ? 'selected' : ''}>Keys 30</option>
+                            <option value="0" ${entry.keys_0 ? 'selected' : ''}>Keys 0</option>
+                            <option value="music" ${entry.keys_music ? 'selected' : ''}>Keys Music</option>
+                            <option value="gym" ${entry.keys_gym ? 'selected' : ''}>Keys Gym</option>
+                        </select>
                     </div>
                     <div class="form-field">
                         <label>Flowers</label>
@@ -253,10 +251,10 @@ jQuery(document).ready(function($) {
                 'pedagogue_degree': $('input[name="pedagogue_degree"]:checked').val(),
                 'misc': $('textarea[name="misc"]').val(),
                 'consent': $('input[name="consent"]').is(':checked') ? 1 : 0,
-                'keys_30': $('input[name="keys_30"]').is(':checked') ? 1 : 0,
-                'keys_0': $('input[name="keys_0"]').is(':checked') ? 1 : 0,
-                'keys_music': $('input[name="keys_music"]').is(':checked') ? 1 : 0,
-                'keys_gym': $('input[name="keys_gym"]').is(':checked') ? 1 : 0,
+                'keys_30': $('select[name="keys"]').val() === '30' ? 1 : 0,
+                'keys_0': $('select[name="keys"]').val() === '0' ? 1 : 0,
+                'keys_music': $('select[name="keys"]').val() === 'music' ? 1 : 0,
+                'keys_gym': $('select[name="keys"]').val() === 'gym' ? 1 : 0,
                 'flowers': $('select[name="flowers"]').val(),
                 'flower_delivery': $('select[name="flower_delivery"]').val(),
                 'laptop': $('select[name="laptop"]').val(),
