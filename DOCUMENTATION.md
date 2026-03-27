@@ -17,7 +17,7 @@ Der er taget højde for sanitering samt XSS angreb.
 
 ## Forbedringer
 
-Detaljer bør enkrypteres før de gemmes i databasen
-Manglende styling der matcher skolens visuelle udtryk. Dette er udskudt indtil Era har lavet den nye hjemmeside
-Bruger login for nye brugere mangler VIGTIG
-Login for HoD mangler VIGTIG
+1. Detaljer bør enkrypteres før de gemmes i databasen
+2. Manglende styling der matcher skolens visuelle udtryk. Dette er udskudt indtil Era har lavet den nye hjemmeside
+3. Bruger login for nye brugere mangler VIGTIG
+4. Login for HoD mangler VIGTIG
