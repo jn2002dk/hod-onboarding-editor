@@ -162,7 +162,7 @@ function hod_employee_form_shortcode() {
                 
                 const data = {
                     action: 'submit_hod_employee',
-                    nonce: '<?php echo wp_create_nonce( 'hod_nonce' ); ?>',
+                    nonce: '<?php echo esc_js( wp_create_nonce( 'hod_nonce' ) ); ?>',
                     name: name,
                     email: email,
                     start_date: start_date,
@@ -178,12 +178,12 @@ function hod_employee_form_shortcode() {
                     consent: consent ? 1 : 0
                 };
                 
-                $.post('<?php echo admin_url( 'admin-ajax.php' ); ?>', data, function(response) {
+                $.post('<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>', data, function(response) {
                     if (response.success) {
                         $('#form-message').addClass('success').html('<p>Thank you for submitting!</p>');
                         $('#hod-employee-form')[0].reset();
                     } else {
-                        $('#form-message').removeClass('success').html('<p>Error: ' + response.data + '</p>');
+                        $('#form-message').removeClass('success').html($('<p>').text('Error: ' + response.data));
                     }
                 });
             });
@@ -231,19 +231,15 @@ function submit_hod_employee() {
     
     // Validate data
     if ( empty( $data['name'] ) || empty( $data['email'] ) || empty( $data['start_date'] ) || empty( $data['phone'] ) || empty( $data['ice_name'] ) || empty( $data['ice_phone'] ) || empty( $data['bank_reg_nr'] ) || empty( $data['bank_account_nr'] ) || empty( $data['tax_type'] ) || empty( $data['teaching_degree'] ) || empty( $data['pedagogue_degree'] ) || !$data['consent'] ) {
-        error_log( 'HOD Submit Validation Failed: ' . print_r( $data, true ) );
         wp_send_json_error( 'All required fields are required and consent must be given' );
     }
-    
-    // Log incoming data
-    error_log( 'HOD Submit Data: ' . print_r( $data, true ) );
-    
+
     $result = $wpdb->insert(
         $table_name,
         $data,
-        array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+        array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
     );
-    
+
     if ( $result === false ) {
         error_log( 'HOD Insert Error: ' . $wpdb->last_error );
         wp_send_json_error( 'Failed to save entry: ' . $wpdb->last_error );
@@ -321,7 +317,10 @@ function update_hod_entry() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'hod_onboarding';
     $entry_id = intval( $_POST['entry_id'] );
-    $updates = $_POST['updates'];
+    $updates = $_POST['updates'] ?? null;
+    if ( ! is_array( $updates ) ) {
+        wp_send_json_error( 'Invalid input' );
+    }
 
     $data = array(
         'name' => sanitize_text_field( $updates['name-1'] ?? '' ),
@@ -351,7 +350,6 @@ function update_hod_entry() {
     );
     
     if ( empty( $data['name'] ) || empty( $data['email'] ) || empty( $data['start_date'] ) || empty( $data['phone'] ) || empty( $data['ice_name'] ) || empty( $data['ice_phone'] ) || empty( $data['bank_reg_nr'] ) || empty( $data['bank_account_nr'] ) || empty( $data['tax_type'] ) || empty( $data['teaching_degree'] ) || empty( $data['pedagogue_degree'] ) || !$data['consent'] ) {
-        error_log( 'HOD Update Validation Failed: ' . print_r( $data, true ) );
         wp_send_json_error( 'All required fields are required and consent must be given' );
     }
 
@@ -359,7 +357,7 @@ function update_hod_entry() {
         $table_name,
         $data,
         array( 'id' => $entry_id ),
-        array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
+        array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
         array( '%d' )
     );
 
