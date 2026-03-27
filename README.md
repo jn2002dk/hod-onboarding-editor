@@ -67,12 +67,17 @@ The plugin registers two blocks for use in the block editor:
 
 ## Changelog
 
-### Version 1.3
+### Version 0.9
+- Fixed XSS vulnerability
+- Removed potentially dangerous error handling that could leak information
+- Added documentation
+
+### Version 0.8
 - Added Gutenberg block support.
 - Improved error logging and validation.
 - Enhanced modal styling for editing.
 
-### Version 1.2
+### Version 0.7
 - Initial public release with dashboard and form functionality.
 
 ## Support
