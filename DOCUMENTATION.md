@@ -13,7 +13,7 @@ New employee form indsættes på den siden man sender til nye ansatte og de skal
 
 ## Implementering
 
-Der er taget højde for sanitering samt XSS angreb.
+Der er taget højde for sanitering samt XSS angreb i php delen samt fjernet potentielle leaks i error handling
 
 ## Forbedringer
 
