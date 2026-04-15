@@ -264,6 +264,84 @@ function hod_onboarding_dashboard_shortcode() {
 }
 add_shortcode( 'hod_onboarding_dashboard', 'hod_onboarding_dashboard_shortcode' );
 
+// Admin settings page for notification emails
+add_action( 'admin_menu', 'hod_add_settings_page' );
+function hod_add_settings_page() {
+    add_options_page(
+        'HoD Onboarding Notifications',
+        'Onboarding Notifications',
+        'manage_options',
+        'hod-notification-emails',
+        'hod_render_settings_page'
+    );
+}
+
+function hod_render_settings_page() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
+    // Handle add/remove on form submit
+    if ( isset( $_POST['hod_settings_nonce'] ) && wp_verify_nonce( $_POST['hod_settings_nonce'], 'hod_settings' ) ) {
+        $emails = get_option( 'hod_notification_emails', array() );
+
+        if ( ! empty( $_POST['hod_add_email'] ) ) {
+            $new_email = sanitize_email( $_POST['hod_add_email'] );
+            if ( is_email( $new_email ) && ! in_array( $new_email, $emails, true ) ) {
+                $emails[] = $new_email;
+                update_option( 'hod_notification_emails', $emails );
+                echo '<div class="notice notice-success"><p>Email added.</p></div>';
+            } else {
+                echo '<div class="notice notice-error"><p>Invalid or duplicate email address.</p></div>';
+            }
+        }
+
+        if ( ! empty( $_POST['hod_remove_email'] ) ) {
+            $remove = sanitize_email( $_POST['hod_remove_email'] );
+            $emails = array_values( array_filter( $emails, fn( $e ) => $e !== $remove ) );
+            update_option( 'hod_notification_emails', $emails );
+            echo '<div class="notice notice-success"><p>Email removed.</p></div>';
+        }
+    }
+
+    $emails = get_option( 'hod_notification_emails', array() );
+    ?>
+    <div class="wrap">
+        <h1>Onboarding Notification Emails</h1>
+        <p>These addresses will receive an email whenever an onboarding entry is sent.</p>
+
+        <table class="widefat" style="max-width:500px;margin-bottom:20px;">
+            <thead><tr><th>Email</th><th>Action</th></tr></thead>
+            <tbody>
+            <?php if ( empty( $emails ) ) : ?>
+                <tr><td colspan="2"><em>No recipients configured.</em></td></tr>
+            <?php else : ?>
+                <?php foreach ( $emails as $email ) : ?>
+                <tr>
+                    <td><?php echo esc_html( $email ); ?></td>
+                    <td>
+                        <form method="post">
+                            <?php wp_nonce_field( 'hod_settings', 'hod_settings_nonce' ); ?>
+                            <input type="hidden" name="hod_remove_email" value="<?php echo esc_attr( $email ); ?>">
+                            <button type="submit" class="button button-secondary">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            </tbody>
+        </table>
+
+        <form method="post" style="max-width:500px;">
+            <?php wp_nonce_field( 'hod_settings', 'hod_settings_nonce' ); ?>
+            <h2>Add Email</h2>
+            <input type="email" name="hod_add_email" placeholder="email@example.com" class="regular-text" required>
+            <button type="submit" class="button button-primary">Add</button>
+        </form>
+    </div>
+    <?php
+}
+
 // Register Gutenberg blocks
 function hod_register_blocks() {
     wp_register_script( 'hod-blocks-js', plugin_dir_url( __FILE__ ) . 'hod-blocks.js', array( 'wp-blocks', 'wp-element', 'wp-editor' ), '1.3', true );
@@ -413,8 +491,13 @@ function send_hod_entry() {
     $message .= "Temp Employment Reason: " . $entry['temp_reason'] . "\n";
     $message .= "Employment Level: " . $entry['employment_level'] . "%\n";
 
-    // Send email (replace recipients)
-    $sent = wp_mail( 'admin@yourdomain.com, it@yourdomain.com', 'New Onboarding Ready', $message );
+    // Send email to configured recipients
+    $recipients = get_option( 'hod_notification_emails', array() );
+    if ( empty( $recipients ) ) {
+        error_log( 'HOD Email Error: No notification recipients configured.' );
+        wp_send_json_error( 'No notification recipients configured. Add emails under Settings > Onboarding Notifications.' );
+    }
+    $sent = wp_mail( $recipients, 'New Onboarding Ready', $message );
 
     if ( ! $sent ) {
         error_log( 'HOD Email Error: Failed to send email for entry ' . $entry_id );
